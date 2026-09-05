@@ -1,0 +1,154 @@
+MILKDROP_PRESET_VERSION=201
+PSVERSION=3
+PSVERSION_WARP=3
+PSVERSION_COMP=3
+
+[preset00]
+fRating=5.000000
+fGammaAdj=1.000000
+fDecay=0.985000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=0.000000
+fWaveScale=0.000000
+fWaveSmoothing=0.900000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.000000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=0.000000
+fWarpScale=0.000000
+fZoomExponent=1.000000
+fShader=1.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.000000
+sx=1.000000
+sy=1.000000
+wave_r=1.000000
+wave_g=0.250000
+wave_b=0.050000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+
+per_frame_1=q1=0.72*q1+5.98*bass_att;
+per_frame_2=q2=0.25+0.10*sin(time*0.11);
+per_frame_3=q3=0.25+0.02*sin(time*0.07);
+per_frame_4=q4=0.13;
+per_frame_5=q5=0.80;
+per_frame_6=q6=0.50;
+per_frame_7=q7=0.95;
+per_frame_8=q8=0.15;
+per_frame_9=wave_a=0;
+
+warp_1=`shader_body
+warp_2=`{
+warp_3=`    ret = tex2D(sampler_main,uv).xyz;
+warp_4=`    ret *= 0.985;
+warp_5=`}
+
+comp_1=`shader_body
+comp_2=`{
+comp_3=`    float2 p=(uv-0.5)*aspect.xy;
+comp_4=`    float r=length(p);
+comp_5=`    float2 safeP=p/max(r,0.00001);
+comp_6=`
+comp_7=`    float pulse=q1*0.08;
+comp_8=`    float lightAngle=q2*6.2831853;
+comp_9=`    float3 L=normalize(float3(cos(lightAngle),sin(lightAngle),1.5-q7));
+comp_10=`
+comp_11=`    float3 bg=float3(0.015,0.015,0.015);
+comp_12=`    ret=bg;
+comp_13=`
+comp_14=`    float scale=0.90;
+comp_15=`
+comp_16=`    float frameOuter=1.0-smoothstep(0.47*scale,0.48*scale,r);
+comp_17=`    float frameInner=smoothstep(0.39*scale,0.40*scale,r);
+comp_18=`    float frameMask=frameOuter*frameInner;
+comp_19=`
+comp_20=`    float3 frameN=normalize(float3(p,0.20));
+comp_21=`    float frameShade=0.5+0.5*dot(frameN,L);
+comp_22=`    float3 frameCol=float3(0.018,0.020,0.022)+frameShade*0.025;
+comp_23=`    ret=lerp(ret,frameCol,frameMask);
+comp_24=`
+comp_25=`    float surrCenter=(0.36+pulse*0.03)*scale;
+comp_26=`    float surrWidth=0.045*scale;
+comp_27=`    float surrDist=abs(r-surrCenter);
+comp_28=`    float surrMask=1.0-smoothstep(surrWidth-0.005*scale,surrWidth,surrDist);
+comp_29=`
+comp_30=`    float surrNX=(r-surrCenter)/max(surrWidth,0.00001);
+comp_31=`    float surrNZ=sqrt(max(0.0,1.0-surrNX*surrNX));
+comp_32=`    float3 surrN=normalize(float3(safeP*surrNX,surrNZ));
+comp_33=`    float surrDiff=pow(max(0.0,dot(surrN,L)),1.05);
+comp_34=`    float3 surrCol=float3(0.035,0.037,0.040);
+comp_35=`    surrCol+=surrDiff*0.10;
+comp_36=`    surrCol+=pow(surrDiff,7.0)*0.53;
+comp_37=`    ret=lerp(ret,surrCol,surrMask);
+comp_38=`
+comp_39=`    float coneInner=(0.12-pulse*0.02)*scale;
+comp_40=`    float coneOuter=(0.32+pulse*0.06)*scale;
+comp_41=`    float coneMask=(1.0-smoothstep(coneOuter-0.005*scale,coneOuter,r))*smoothstep(coneInner,coneInner+0.01*scale,r);
+comp_42=`
+comp_43=`    float grooves=0.5+0.5*sin(r*400.0/scale);
+comp_44=`    float grooveLight=pow(max(0.0,dot(safeP,L.xy)),1.15)*grooves;
+comp_45=`    float coneDepth=saturate((r-coneInner)/max(coneOuter-coneInner,0.00001));
+comp_46=`
+comp_47=`    float b=saturate(q1);
+comp_48=`    float h=time*0.2 + r*(12.0 + b*10.0) + sin(r*30.0 - time*6.0)*b*4.0;
+comp_49=`    float3 cBlue=float3(0.0, 0.45, 1.0) * (0.6 + b*1.8);
+comp_50=`    float3 cBlack=float3(0.0, 0.0, 0.0);
+comp_51=`    float wavePattern=pow(0.5+0.5*sin(h), 1.0 + b*3.0);
+comp_52=`    float3 coneBase=lerp(cBlack, cBlue, wavePattern);
+comp_53=`    coneBase*=0.70+0.30*b;
+comp_54=`    coneBase*=0.35+coneDepth*0.65;
+comp_55=`    coneBase+=grooveLight*0.53*0.40;
+comp_56=`    coneBase*=0.75+0.25*max(0.0,dot(safeP,L.xy));
+comp_57=`    ret=lerp(ret,max(coneBase,bg),coneMask);
+comp_58=`
+comp_59=`    float capSize=(0.13+pulse*0.02)*scale;
+comp_60=`    float capMask=1.0-smoothstep(capSize-0.005*scale,capSize,r);
+comp_61=`    float2 capP=p/max(capSize,0.00001);
+comp_62=`    float capZ=sqrt(max(0.0,1.0-dot(capP,capP)));
+comp_63=`    float3 capN=normalize(float3(capP,capZ));
+comp_64=`    float capDiff=pow(max(0.0,dot(capN,L)),1.05);
+comp_65=`    float3 R=reflect(-L,capN);
+comp_66=`    float capSpec=pow(max(0.0,dot(R,float3(0,0,1))),24.0);
+comp_67=`    float3 capCol=float3(0.028,0.028,0.030)+capDiff*0.05+capSpec*0.53*0.40;
+comp_68=`    ret=lerp(ret,capCol,capMask);
+comp_69=`
+comp_70=`    float ao=(0.55+0.45*smoothstep(0.0,0.06*scale,abs(r-coneOuter)))*(0.65+0.35*smoothstep(0.0,0.04*scale,abs(r-capSize)));
+comp_71=`    ret*=max(ao,0.10+0.50*0.15);
+comp_72=`    ret+=0.25*0.20;
+comp_73=`
+comp_74=`    float silhouette=1.0-smoothstep(0.475*scale,0.48*scale,r);
+comp_75=`    ret=lerp(bg,ret,silhouette);
+comp_76=`    ret+=q1*0.003*silhouette;
+comp_77=`}
+
