@@ -1,5 +1,5 @@
 # Electric-Power-Milkdrop-Preset
 A milkdrop preset
 
-<img width="800" height="359" alt="1000089614" src="https://github.com/user-attachments/assets/071bb3c3-fa5a-4cfe-ba45-f7fbf9672243" />
+<img width="800" height="359" alt="1000089621" src="https://github.com/user-attachments/assets/ff734e6e-8644-49d4-9a08-36c6a3f5a2c3" />
 
